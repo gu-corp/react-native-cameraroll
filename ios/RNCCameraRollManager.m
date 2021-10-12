@@ -20,6 +20,8 @@
 #import <React/RCTLog.h>
 #import <React/RCTUtils.h>
 
+#import "ImageSaver.h"
+
 #import "RNCAssetsLibraryRequestHandler.h"
 
 @implementation RCTConvert (PHAssetCollectionSubtype)
@@ -127,6 +129,29 @@ static void requestPhotoLibraryAccess(RCTPromiseRejectBlock reject, PhotosAuthor
   } else {
     reject(kErrorAuthDenied, @"Access to photo library was denied", nil);
   }
+}
+
+RCT_EXPORT_METHOD(saveToLibrary:(NSURLRequest *)request
+                  options:(NSDictionary *)options
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    ImageSaver *imgManager = [[ImageSaver alloc] init];
+    NSData *data = [NSData dataWithContentsOfURL:request.URL];
+    UIImage *image = [UIImage imageWithData:data];
+    
+    imgManager.successHandle = ^{
+        resolve(request.URL.absoluteString);
+    };
+    
+    imgManager.faildHandle = ^void(NSError* error){
+        if ([error.localizedRecoverySuggestion isEqual: @"Launch the Photos application"]) {
+            reject(kErrorAuthDenied, @"Access to photo library is restricted", nil);
+        } else {
+            reject(kErrorUnableToSave, nil, nil);
+        }
+    };
+    
+    [imgManager writeToPhoto:image];
 }
 
 RCT_EXPORT_METHOD(saveToCameraRoll:(NSURLRequest *)request
