@@ -2,8 +2,6 @@
 //  ImageSaver.h
 //  react-native-cameraroll
 //
-//  Created by Miichi on 30.08.22.
-//
 
 #import <React/RCTBridge.h>
 #import <Foundation/Foundation.h>

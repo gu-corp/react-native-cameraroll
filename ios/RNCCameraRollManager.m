@@ -132,7 +132,6 @@ static void requestPhotoLibraryAccess(RCTPromiseRejectBlock reject, PhotosAuthor
 }
 
 RCT_EXPORT_METHOD(saveToLibrary:(NSURLRequest *)request
-                  options:(NSDictionary *)options
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     ImageSaver *imgManager = [[ImageSaver alloc] init];
@@ -144,7 +143,7 @@ RCT_EXPORT_METHOD(saveToLibrary:(NSURLRequest *)request
     };
     
     imgManager.faildHandle = ^void(NSError* error){
-        if ([error.localizedRecoverySuggestion isEqual: @"Launch the Photos application"]) {
+      if ([error.domain isEqual:@"ALAssetsLibraryErrorDomain"]) {
             reject(kErrorAuthDenied, @"Access to photo library is restricted", nil);
         } else {
             reject(kErrorUnableToSave, nil, nil);

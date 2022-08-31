@@ -169,30 +169,13 @@ class CameraRoll {
 
 
   static saveToLibrary(
-    tag: string,
-    options?: SaveToCameraRollOptions = {},
+    tag: string
   ): Promise<string> {
-    let {type = 'auto', album = ''} = options;
     invariant(
       typeof tag === 'string',
       'CameraRoll.saveToCameraRoll must be a valid string.',
     );
-    invariant(
-      options.type === 'photo' ||
-        options.type === 'video' ||
-        options.type === 'auto' ||
-        options.type === undefined,
-      `The second argument to saveToCameraRoll must be 'photo' or 'video' or 'auto'. You passed ${type ||
-        'unknown'}`,
-    );
-    if (type === 'auto') {
-      if (['mov', 'mp4'].indexOf(tag.split('.').slice(-1)[0]) >= 0) {
-        type = 'video';
-      } else {
-        type = 'photo';
-      }
-    }
-    return RNCCameraRoll.saveToLibrary(tag, {type, album});
+    return RNCCameraRoll.saveToLibrary(tag);
   }
 
   /**

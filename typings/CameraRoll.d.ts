@@ -164,7 +164,6 @@ declare namespace CameraRoll {
 
   function saveToLibrary(
     tag: string,
-    options?: SaveToCameraRollOptions,
   ): Promise<string>;
   /**
    * Saves the photo or video to the camera roll or photo library.

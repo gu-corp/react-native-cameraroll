@@ -2,8 +2,6 @@
 //  ImageSaver.m
 //  react-native-cameraroll
 //
-//  Created by Miichi on 30.08.22.
-//
 
 #import "ImageSaver.h"
 #import <UIKit/UIKit.h>
