@@ -167,6 +167,17 @@ class CameraRoll {
     return RNCCameraRoll.deletePhotos(photoUris);
   }
 
+
+  static saveToLibrary(
+    tag: string
+  ): Promise<string> {
+    invariant(
+      typeof tag === 'string',
+      'CameraRoll.saveToCameraRoll must be a valid string.',
+    );
+    return RNCCameraRoll.saveToLibrary(tag);
+  }
+
   /**
    * Saves the photo or video to the camera roll or photo library.
    *
