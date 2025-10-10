@@ -8,10 +8,11 @@
  * @format
  */
 'use strict';
-import {Platform} from 'react-native';
-import RNCCameraRoll from './nativeInterface';
 
 const invariant = require('fbjs/lib/invariant');
+const {NativeModules, Platform} = require('react-native');
+
+const RNCCameraRoll = NativeModules.RNCCameraRoll;
 
 const GROUP_TYPES_OPTIONS = {
   Album: 'Album',
@@ -38,57 +39,15 @@ export type Include =
   | 'imageSize'
   | 'playableDuration';
 
-/**
- * Shape of the param arg for the `getPhotos` function.
- */
 export type GetPhotosParams = {
-  /**
-   * The number of photos wanted in reverse order of the photo application
-   * (i.e. most recent first).
-   */
   first: number,
-
-  /**
-   * A cursor that matches `page_info { end_cursor }` returned from a previous
-   * call to `getPhotos`
-   */
   after?: string,
-
-  /**
-   * Specifies which group types to filter the results to.
-   */
   groupTypes?: GroupTypes,
-
-  /**
-   * Specifies filter on group names, like 'Recent Photos' or custom album
-   * titles.
-   */
   groupName?: string,
-
-  /**
-   * Specifies filter on asset type
-   */
   assetType?: $Keys<typeof ASSET_TYPE_OPTIONS>,
-
-  /**
-   * Earliest time to get photos from. A timestamp in milliseconds. Exclusive.
-   */
   fromTime?: number,
-
-  /**
-   * Latest time to get photos from. A timestamp in milliseconds. Inclusive.
-   */
   toTime?: Number,
-
-  /**
-   * Filter by mimetype (e.g. image/jpeg).
-   */
   mimeTypes?: Array<string>,
-
-  /**
-   * Specific fields in the output that we want to include, even though they
-   * might have some performance impact.
-   */
   include?: Include[],
 };
 
@@ -149,81 +108,80 @@ class CameraRoll {
   static AssetTypeOptions = ASSET_TYPE_OPTIONS;
 
   /**
-   * `CameraRoll.saveImageWithTag()` is deprecated. Use `CameraRoll.saveToCameraRoll()` instead.
+   * Saves the photo to the camera roll using UIImageWriteToSavedPhotosAlbum (iOS only)
+   * This method doesn't require NSPhotoLibraryUsageDescription
    */
-  static saveImageWithTag(tag: string): Promise<string> {
-    console.warn(
-      '`CameraRoll.saveImageWithTag()` is deprecated. Use `CameraRoll.saveToCameraRoll()` instead.',
-    );
-    return this.saveToCameraRoll(tag, 'photo');
-  }
-
-  /**
-   * On iOS: requests deletion of a set of photos from the camera roll.
-   * On Android: Deletes a set of photos from the camera roll.
-   *
-   */
-  static deletePhotos(photoUris: Array<string>) {
-    return RNCCameraRoll.deletePhotos(photoUris);
-  }
-
-
-  static saveToLibrary(
-    tag: string
-  ): Promise<string> {
+  static saveToLibrary(tag: string): Promise<string> {
     invariant(
       typeof tag === 'string',
-      'CameraRoll.saveToCameraRoll must be a valid string.',
+      'CameraRoll.saveToLibrary must be a valid string.',
     );
     return RNCCameraRoll.saveToLibrary(tag);
   }
 
   /**
+   * `CameraRoll.saveImageWithTag()` is deprecated. Use `CameraRoll.saveToLibrary()` instead.
+   */
+  static saveImageWithTag(tag: string): Promise<string> {
+    console.warn(
+      '`CameraRoll.saveImageWithTag()` is deprecated. Use `CameraRoll.saveToLibrary()` instead.',
+    );
+    return this.saveToLibrary(tag);
+  }
+
+  /**
    * Saves the photo or video to the camera roll or photo library.
-   *
+   * @deprecated Use saveToLibrary instead for iOS compatibility
    */
   static save(
     tag: string,
     options: SaveToCameraRollOptions = {},
   ): Promise<string> {
-    let {type = 'auto', album = ''} = options;
-    invariant(
-      typeof tag === 'string',
-      'CameraRoll.saveToCameraRoll must be a valid string.',
+    console.warn(
+      'CameraRoll.save is deprecated. Use CameraRoll.saveToLibrary instead for iOS compatibility.',
     );
-    invariant(
-      options.type === 'photo' ||
-        options.type === 'video' ||
-        options.type === 'auto' ||
-        options.type === undefined,
-      `The second argument to saveToCameraRoll must be 'photo' or 'video' or 'auto'. You passed ${type ||
-        'unknown'}`,
-    );
-    if (type === 'auto') {
-      if (['mov', 'mp4'].indexOf(tag.split('.').slice(-1)[0]) >= 0) {
-        type = 'video';
-      } else {
-        type = 'photo';
-      }
-    }
-    return RNCCameraRoll.saveToCameraRoll(tag, {type, album});
+    return this.saveToLibrary(tag);
   }
+
+  /**
+   * @deprecated Use saveToLibrary instead for iOS compatibility
+   */
   static saveToCameraRoll(
     tag: string,
     type?: 'photo' | 'video' | 'auto',
   ): Promise<string> {
     console.warn(
-      'CameraRoll.saveToCameraRoll(tag, type) is deprecated.  Use the save function instead',
+      'CameraRoll.saveToCameraRoll is deprecated. Use CameraRoll.saveToLibrary instead for iOS compatibility.',
     );
-    return CameraRoll.save(tag, {type});
+    return CameraRoll.saveToLibrary(tag);
   }
+
+  /**
+   * @deprecated Not available without NSPhotoLibraryUsageDescription on iOS
+   */
   static getAlbums(
     params?: GetAlbumsParams = {assetType: ASSET_TYPE_OPTIONS.All},
   ): Promise<Album[]> {
+    console.warn(
+      'CameraRoll.getAlbums is not available without NSPhotoLibraryUsageDescription on iOS',
+    );
+    if (Platform.OS === 'ios') {
+      return Promise.reject(new Error('Photo library access is not available in this app configuration'));
+    }
     return RNCCameraRoll.getAlbums(params);
   }
 
-  static getParamsWithDefaults(params: GetPhotosParams): GetPhotosParams {
+  /**
+   * @deprecated Not available without NSPhotoLibraryUsageDescription on iOS
+   */
+  static getPhotos(params: GetPhotosParams): Promise<PhotoIdentifiersPage> {
+    console.warn(
+      'CameraRoll.getPhotos is not available without NSPhotoLibraryUsageDescription on iOS',
+    );
+    if (Platform.OS === 'ios') {
+      return Promise.reject(new Error('Photo library access is not available in this app configuration'));
+    }
+    
     const newParams = {...params};
     if (!newParams.assetType) {
       newParams.assetType = ASSET_TYPE_OPTIONS.All;
@@ -231,22 +189,12 @@ class CameraRoll {
     if (!newParams.groupTypes && Platform.OS !== 'android') {
       newParams.groupTypes = GROUP_TYPES_OPTIONS.All;
     }
-    return newParams;
-  }
 
-  /**
-   * Returns a Promise with photo identifier objects from the local camera
-   * roll of the device matching shape defined by `getPhotosReturnChecker`.
-   *
-   * See https://facebook.github.io/react-native/docs/cameraroll.html#getphotos
-   */
-  static getPhotos(params: GetPhotosParams): Promise<PhotoIdentifiersPage> {
-    params = CameraRoll.getParamsWithDefaults(params);
-    const promise = RNCCameraRoll.getPhotos(params);
+    const promise = RNCCameraRoll.getPhotos(newParams);
 
     if (arguments.length > 1) {
       console.warn(
-        'CameraRoll.getPhotos(tag, success, error) is deprecated.  Use the returned Promise instead',
+        'CameraRoll.getPhotos(tag, success, error) is deprecated. Use the returned Promise instead',
       );
       let successCallback = arguments[1];
       const errorCallback = arguments[2] || (() => {});
@@ -254,6 +202,19 @@ class CameraRoll {
     }
 
     return promise;
+  }
+
+  /**
+   * @deprecated Not available without NSPhotoLibraryUsageDescription on iOS
+   */
+  static deletePhotos(photoUris: Array<string>): Promise<boolean> {
+    console.warn(
+      'CameraRoll.deletePhotos is not available without NSPhotoLibraryUsageDescription on iOS',
+    );
+    if (Platform.OS === 'ios') {
+      return Promise.reject(new Error('Photo library access is not available in this app configuration'));
+    }
+    return RNCCameraRoll.deletePhotos(photoUris);
   }
 }
 
