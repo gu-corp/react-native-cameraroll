@@ -29,62 +29,15 @@ declare namespace CameraRoll {
     /** Ensures the image playableDuration is included. Has a medium performance hit on Android */
     | 'playableDuration';
 
-  /**
-   * Shape of the param arg for the `getPhotosFast` function.
-   */
   interface GetPhotosParams {
-    /**
-     * The number of photos wanted in reverse order of the photo application
-     * (i.e. most recent first).
-     */
     first: number;
-
-    /**
-     * A cursor that matches `page_info { end_cursor }` returned from a previous
-     * call to `getPhotos`. Note that using this will reduce performance
-     * slightly on iOS. An alternative is just using the `fromTime` and `toTime`
-     * filters, which have no such impact.
-     */
     after?: string;
-
-    /**
-     * Specifies which group types to filter the results to.
-     */
     groupTypes?: GroupType;
-
-    /**
-     * Specifies filter on group names, like 'Recent Photos' or custom album
-     * titles.
-     */
     groupName?: string;
-
-    /**
-     * Specifies filter on asset type
-     */
     assetType?: AssetType;
-
-    /**
-     * Filter by creation time with a timestamp in milliseconds. This time is
-     * exclusive, so we'll select all photos with `timestamp > fromTime`.
-     */
     fromTime?: number;
-
-    /**
-     * Filter by creation time with a timestamp in milliseconds. This time is
-     * inclusive, so we'll select all photos with `timestamp <= toTime`.
-     */
     toTime?: number;
-
-    /**
-     * Filter by mimetype (e.g. image/jpeg). Note that using this will reduce
-     * performance slightly on iOS.
-     */
     mimeTypes?: Array<string>;
-
-    /**
-     * Specific fields in the output that we want to include, even though they
-     * might have some performance impact.
-     */
     include?: Include[];
   }
 
@@ -93,24 +46,14 @@ declare namespace CameraRoll {
       type: string;
       group_name: string;
       image: {
-        /** Only set if the `include` parameter contains `filename`. */
         filename: string | null;
         uri: string;
-        /** Only set if the `include` parameter contains `imageSize`. */
         height: number;
-        /** Only set if the `include` parameter contains `imageSize`. */
         width: number;
-        /** Only set if the `include` parameter contains `fileSize`. */
         fileSize: number | null;
-        /**
-         * Only set if the `include` parameter contains `playableDuration`.
-         * Will be null for images.
-         */
         playableDuration: number | null;
       };
-      /** Timestamp in seconds. */
       timestamp: number;
-      /** Only set if the `include` parameter contains `location`. */
       location: {
         latitude?: number;
         longitude?: number;
@@ -145,28 +88,21 @@ declare namespace CameraRoll {
   };
 
   /**
-   * `CameraRoll.saveImageWithTag()` is deprecated. Use `CameraRoll.saveToCameraRoll()` instead.
+   * Saves the photo to the camera roll using UIImageWriteToSavedPhotosAlbum (iOS only)
+   * This method doesn't require NSPhotoLibraryUsageDescription
    */
-  function saveImageWithTag(tag: string): Promise<string>;
+  function saveToLibrary(tag: string): Promise<string>;
 
   /**
-   * Delete a photo from the camera roll or media library. photoUris is an array of photo uri's.
-   */
-  function deletePhotos(photoUris: Array<string>): Promise<boolean>;
-
-  /**
-   * Saves the photo or video to the camera roll or photo library.
+   * @deprecated Use saveToLibrary instead for iOS compatibility
    */
   function saveToCameraRoll(
     tag: string,
     type?: 'photo' | 'video',
   ): Promise<string>;
 
-  function saveToLibrary(
-    tag: string,
-  ): Promise<string>;
   /**
-   * Saves the photo or video to the camera roll or photo library.
+   * @deprecated Use saveToLibrary instead for iOS compatibility
    */
   function save(
     tag: string,
@@ -174,12 +110,19 @@ declare namespace CameraRoll {
   ): Promise<string>;
 
   /**
-   * Returns a Promise with photo identifier objects from the local camera
-   * roll of the device matching shape defined by `getPhotosReturnChecker`.
+   * @deprecated Not available without NSPhotoLibraryUsageDescription on iOS
    */
   function getPhotos(params: GetPhotosParams): Promise<PhotoIdentifiersPage>;
 
+  /**
+   * @deprecated Not available without NSPhotoLibraryUsageDescription on iOS
+   */
   function getAlbums(params: GetAlbumsParams): Promise<Album[]>;
+
+  /**
+   * @deprecated Not available without NSPhotoLibraryUsageDescription on iOS
+   */
+  function deletePhotos(photoUris: Array<string>): Promise<boolean>;
 }
 
 export = CameraRoll;
