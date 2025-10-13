@@ -161,9 +161,15 @@ class CameraRoll {
   /**
    * On iOS: requests deletion of a set of photos from the camera roll.
    * On Android: Deletes a set of photos from the camera roll.
-   *
+   * 
+   * NEW UPDATE:
+   * @deprecated Not available without NSPhotoLibraryUsageDescription on iOS
    */
   static deletePhotos(photoUris: Array<string>) {
+    if (Platform.OS === 'ios') {
+      return Promise.reject(new Error('Photo library access is not available in this app configuration'));
+    }
+
     return RNCCameraRoll.deletePhotos(photoUris);
   }
 
@@ -217,9 +223,18 @@ class CameraRoll {
     );
     return CameraRoll.save(tag, {type});
   }
+
+  /**
+   * NEW UPDATE:
+   * @deprecated Not available without NSPhotoLibraryUsageDescription on iOS
+   */
   static getAlbums(
     params?: GetAlbumsParams = {assetType: ASSET_TYPE_OPTIONS.All},
   ): Promise<Album[]> {
+    if (Platform.OS === 'ios') {
+      return Promise.reject(new Error('Photo library access is not available in this app configuration'));
+    }
+
     return RNCCameraRoll.getAlbums(params);
   }
 
@@ -239,8 +254,15 @@ class CameraRoll {
    * roll of the device matching shape defined by `getPhotosReturnChecker`.
    *
    * See https://facebook.github.io/react-native/docs/cameraroll.html#getphotos
+   * 
+   * NEW UPDATE:
+   * @deprecated Not available without NSPhotoLibraryUsageDescription on iOS
    */
   static getPhotos(params: GetPhotosParams): Promise<PhotoIdentifiersPage> {
+    if (Platform.OS === 'ios') {
+      return Promise.reject(new Error('Photo library access is not available in this app configuration'));
+    }
+
     params = CameraRoll.getParamsWithDefaults(params);
     const promise = RNCCameraRoll.getPhotos(params);
 

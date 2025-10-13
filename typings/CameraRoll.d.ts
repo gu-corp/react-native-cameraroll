@@ -151,6 +151,8 @@ declare namespace CameraRoll {
 
   /**
    * Delete a photo from the camera roll or media library. photoUris is an array of photo uri's.
+   * NEW UPDATE:
+   * @deprecated Not available without NSPhotoLibraryUsageDescription on iOS
    */
   function deletePhotos(photoUris: Array<string>): Promise<boolean>;
 
@@ -176,9 +178,15 @@ declare namespace CameraRoll {
   /**
    * Returns a Promise with photo identifier objects from the local camera
    * roll of the device matching shape defined by `getPhotosReturnChecker`.
+   * NEW UPDATE:
+   * @deprecated Not available without NSPhotoLibraryUsageDescription on iOS
    */
   function getPhotos(params: GetPhotosParams): Promise<PhotoIdentifiersPage>;
 
+  /**
+   * NEW UPDATE:
+   * @deprecated Not available without NSPhotoLibraryUsageDescription on iOS
+   */
   function getAlbums(params: GetAlbumsParams): Promise<Album[]>;
 }
 
