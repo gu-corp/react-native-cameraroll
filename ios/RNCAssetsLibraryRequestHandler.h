@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#import <React/RCTBridge.h>
-#import <React/RCTURLRequestHandler.h>
+// #import <React/RCTBridge.h>
+// #import <React/RCTURLRequestHandler.h>
 
-@class PHPhotoLibrary;
+// @class PHPhotoLibrary;
 
-@interface RNCAssetsLibraryRequestHandler : NSObject <RCTURLRequestHandler>
+// @interface RNCAssetsLibraryRequestHandler : NSObject <RCTURLRequestHandler>
 
-@end
+// @end

@@ -5,26 +5,26 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#import "RNCAssetsLibraryRequestHandler.h"
+// #import "RNCAssetsLibraryRequestHandler.h"
 
-#import <stdatomic.h>
-#import <dlfcn.h>
-#import <objc/runtime.h>
+// #import <stdatomic.h>
+// #import <dlfcn.h>
+// #import <objc/runtime.h>
 
 //#import <Photos/Photos.h>
 //#import <MobileCoreServices/MobileCoreServices.h>
 
-#import <React/RCTBridge.h>
-#import <React/RCTNetworking.h>
-#import <React/RCTUtils.h>
+// #import <React/RCTBridge.h>
+// #import <React/RCTNetworking.h>
+// #import <React/RCTUtils.h>
 
-@implementation RNCAssetsLibraryRequestHandler
+// @implementation RNCAssetsLibraryRequestHandler
 
-NSString *const PHUploadScheme = @"ph-upload";
+// NSString *const PHUploadScheme = @"ph-upload";
 
-RCT_EXPORT_MODULE()
+// RCT_EXPORT_MODULE()
 
-#pragma mark - RNCURLRequestHandler
+// #pragma mark - RNCURLRequestHandler
 
 //- (BOOL)canHandleRequest:(NSURLRequest *)request
 //{
@@ -160,4 +160,4 @@ RCT_EXPORT_MODULE()
 //  ((void (^)(void))requestToken)();
 //}
 
-@end
+// @end
