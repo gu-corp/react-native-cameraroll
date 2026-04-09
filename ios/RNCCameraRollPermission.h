@@ -12,16 +12,14 @@
 #import <React/RCTBridge.h>
 #endif
 #import <React/RCTEventEmitter.h>
-#import <Photos/Photos.h>
 #import "RNCPermissionHelper.h"
 
 
 @interface RNCCameraRollPermission : RCTEventEmitter
 
 #ifdef RCT_NEW_ARCH_ENABLED
-                                   <NativeCameraRollPermissionModuleSpec
+                                   <NativeCameraRollPermissionModuleSpec>
 #else
-                                   <RCTBridgeModule
+                                   <RCTBridgeModule>
 #endif
-, PHPhotoLibraryChangeObserver>
 @end

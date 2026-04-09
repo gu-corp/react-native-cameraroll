@@ -12,8 +12,6 @@
 #import <Foundation/Foundation.h>
 #import <React/RCTImageURLLoader.h>
 
-@class PHPhotoLibrary;
-
 // Uses the new CodeGen'd `modulesConformingToProtocol` feature.
 // Supports loading Images from ph:// and asset-library:// URLs.
 @interface RNCPHAssetLoader : NSObject <RCTImageURLLoader>

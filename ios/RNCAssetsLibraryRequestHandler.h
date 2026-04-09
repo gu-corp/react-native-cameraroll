@@ -8,8 +8,6 @@
 #import <React/RCTBridge.h>
 #import <React/RCTURLRequestHandler.h>
 
-@class PHPhotoLibrary;
-
 #if RCT_NEW_ARCH_ENABLED
 // on new arch, we have RNCPHAssetLoader and RNCPHUploader.
 #else

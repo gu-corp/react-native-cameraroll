@@ -5,6 +5,9 @@
 //  Created by sakhi idris on 16/08/2022.
 //  Copyright © 2022 Facebook. All rights reserved.
 //
+// NOTE: Photos.framework dependency removed to allow this library to be used
+// in apps (such as in-app browsers) that must not link Photos.framework.
+//
 #import "RNCCameraRollPermission.h"
 #import "RNCPermissionHelper.h"
 #import <React/RCTUtils.h>
@@ -19,13 +22,11 @@
 // Will be called when this module's first listener is added.
 -(void)startObserving {
   hasListeners = YES;
-  [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
 }
 
 // Will be called when this module's last listener is removed, or on dealloc.
 -(void)stopObserving {
   hasListeners = NO;
-  [[PHPhotoLibrary sharedPhotoLibrary] unregisterChangeObserver:self];
 }
 
 RCT_EXPORT_MODULE()
@@ -51,13 +52,6 @@ RCT_EXPORT_MODULE()
       return @"limited";
     case RNPermissionStatusAuthorized:
       return @"granted";
-  }
-}
-
-- (void)photoLibraryDidChange:(PHChange *)changeInstance
-{
-  if (hasListeners && changeInstance != nil) {
-    [self sendEventWithName:@"onLibrarySelectionChange" body:@"Changes occured"];
   }
 }
 
@@ -111,4 +105,3 @@ RCT_EXPORT_METHOD(refreshPhotoSelection:
 #endif
 
 @end
-

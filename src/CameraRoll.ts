@@ -240,6 +240,22 @@ export class CameraRoll {
   }
 
   /**
+   * Saves an image to the user's photo library using
+   * `UIImageWriteToSavedPhotosAlbum` (iOS only). This avoids any dependency
+   * on the Photos framework / `PHPhotoLibrary`, so it can be used in apps
+   * (e.g. in-app browsers) that must not link Photos.framework.
+   *
+   * @param tag The URI of the image you want to save.
+   * @returns A promise that resolves with the original `tag` on success.
+   */
+  static saveToLibrary(tag: string): Promise<string> {
+    if (typeof tag !== 'string') {
+      throw new Error('CameraRoll.saveToLibrary tag must be a valid string.');
+    }
+    return RNCCameraRoll.saveToLibrary(tag);
+  }
+
+  /**
    * Saves the photo or video to the camera roll or photo library, and returns the URI of the newly created asset.
    *
    * @deprecated `save(...)` is deprecated - use `saveAsset(...)` instead.

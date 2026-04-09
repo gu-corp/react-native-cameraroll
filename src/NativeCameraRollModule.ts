@@ -78,6 +78,7 @@ type PhotoIdentifiersPage = {
 };
 
 export interface Spec extends TurboModule {
+  saveToLibrary(uri: string): Promise<string>;
   saveToCameraRoll(uri: string, options: Object): Promise<PhotoIdentifier>;
   getPhotos(params: Object): Promise<PhotoIdentifiersPage>;
   getAlbums(params: Object): Promise<Album[]>;
