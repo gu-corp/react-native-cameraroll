@@ -144,6 +144,13 @@ public class CameraRollModule extends NativeCameraRollModuleSpec {
    * @param promise to be resolved or rejected
    */
   @ReactMethod
+  public void saveToLibrary(String uri, Promise promise) {
+    ReadableMap emptyOptions = Arguments.createMap();
+    new SaveToCameraRoll(getReactApplicationContext(), Uri.parse(uri), emptyOptions, promise)
+            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+  }
+
+  @ReactMethod
   public void saveToCameraRoll(String uri, ReadableMap options, Promise promise) {
     new SaveToCameraRoll(getReactApplicationContext(), Uri.parse(uri), options, promise)
             .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
